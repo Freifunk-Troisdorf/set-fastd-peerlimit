@@ -5,7 +5,7 @@ set -o pipefail
 
 nodes=`/usr/local/sbin/batctl o | sed $= -n`
 gateways=`/usr/local/sbin/batctl gwl | sed -r 's/([^\.]*)\(.*/\1/' | sed '/04:74:05:d0:4f/d' | sed $= -n`
-connections=$(( $nodes/$gateways+5 ))
+connections=$(( $nodes/$gateways ))
 sed -i "s/.*peer limit.*/peer limit $connections;/g" /etc/fastd/tro/fastd.conf
 #Reload Fastd
 kill -HUP $(pidof fastd)
