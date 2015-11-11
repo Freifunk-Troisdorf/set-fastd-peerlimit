@@ -13,6 +13,7 @@ connections_renew=$(( $nodes/$gateways+10 ))
 sed -i "s/.*peer limit.*/peer limit $connections;/g" /etc/fastd/tro/fastd.conf
 
 if [[ $gateways != $gateways_old ]]; then
+	echo "Gateways geändert!"
 	service fastd stop
 	sleep 5
 	service fastd start
@@ -21,6 +22,7 @@ if [[ $gateways != $gateways_old ]]; then
     exit 0
 fi
 if [[ $connections_old -le $connections_renew ]]; then
+	echo "Connections geändert!"
 	service fastd stop
 	sleep 5
 	service fastd start
