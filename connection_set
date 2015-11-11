@@ -5,7 +5,29 @@ set -o pipefail
 
 nodes=`/usr/local/sbin/batctl o | sed $= -n`
 gateways=`/usr/local/sbin/batctl gwl | sed -r 's/([^\.]*)\(.*/\1/' | sed '/04:74:05:d0:4f/d' | sed $= -n`
+gateways_old=`cat gateways.old`
 connections=$(( $nodes/$gateways ))
+connections_old=`cat connections.old`
+connections_renew=$(( $nodes/$gateways+10 ))
+
 sed -i "s/.*peer limit.*/peer limit $connections;/g" /etc/fastd/tro/fastd.conf
+
+if [[ $gateways != $gateways_old ]]; then
+	service fastd stop
+	sleep 5
+	service fastd start
+	echo $gateways > gateways.old
+    echo $connections > connections.old
+    exit 0
+fi
+if [[ $connections_old -le $connections_renew ]]; then
+	service fastd stop
+	sleep 5
+	service fastd start
+	echo $gateways > gateways.old
+    echo $connections > connections.old
+    exit 0
+fi
 #Reload Fastd
-kill -HUP $(pidof fastd)
+echo $gateways > gateways.old
+echo $connections > connections.old
