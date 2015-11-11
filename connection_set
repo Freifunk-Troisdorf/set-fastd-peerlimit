@@ -21,7 +21,7 @@ if [[ $gateways != $gateways_old ]]; then
     echo $connections > connections.old
     exit 0
 fi
-if [[ $connections_old -le $connections_renew ]]; then
+if [[ $connections_old -gt $connections_renew ]]; then
 	echo "Connections geändert!"
 	service fastd stop
 	sleep 5
