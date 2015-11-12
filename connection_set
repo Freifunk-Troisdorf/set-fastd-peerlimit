@@ -8,7 +8,7 @@ nodes=`/usr/local/sbin/batctl o | sed $= -n`
 gateways=`/usr/local/sbin/batctl gwl | sed -r 's/([^\.]*)\(.*/\1/' | sed '/04:74:05:d0:4f/d' | sed $= -n`
 gateways_old=`cat /tmp/gateways.old`
 connections=$(( $nodes/$gateways ))
-connections_old=`cat connections.old`
+connections_old=`cat /tmp/connections.old`
 connections_renew=$(( $nodes/$gateways+10 ))
 
 sed -i "s/.*peer limit.*/peer limit $connections;/g" /etc/fastd/tro/fastd.conf
