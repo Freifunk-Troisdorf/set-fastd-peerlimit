@@ -2,10 +2,11 @@
 
 set -e
 set -o pipefail
-
+touch /tmp/gateways.old
+touch /tmp/connections.old
 nodes=`/usr/local/sbin/batctl o | sed $= -n`
 gateways=`/usr/local/sbin/batctl gwl | sed -r 's/([^\.]*)\(.*/\1/' | sed '/04:74:05:d0:4f/d' | sed $= -n`
-gateways_old=`cat gateways.old`
+gateways_old=`cat /tmp/gateways.old`
 connections=$(( $nodes/$gateways ))
 connections_old=`cat connections.old`
 connections_renew=$(( $nodes/$gateways+10 ))
@@ -17,8 +18,8 @@ if [[ $gateways != $gateways_old ]]; then
 	service fastd stop
 	sleep 5
 	service fastd start
-	echo $gateways > gateways.old
-    echo $connections > connections.old
+	echo $gateways > /tmp/gateways.old
+    echo $connections > /tmp/connections.old
     exit 0
 fi
 if [[ $connections_old -gt $connections_renew ]]; then
@@ -26,10 +27,10 @@ if [[ $connections_old -gt $connections_renew ]]; then
 	service fastd stop
 	sleep 5
 	service fastd start
-	echo $gateways > gateways.old
-    echo $connections > connections.old
+	echo $gateways > /tmp/gateways.old
+    echo $connections > /tmp/connections.old
     exit 0
 fi
 #Reload Fastd
-echo $gateways > gateways.old
-echo $connections > connections.old
+echo $gateways > /tmp/gateways.old
+echo $connections > /tmp/connections.old
